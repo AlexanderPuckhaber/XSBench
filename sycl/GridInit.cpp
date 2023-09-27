@@ -30,7 +30,7 @@ SimulationData grid_init_do_not_profile( Inputs in, int mype )
 	
 	// Initialize Nuclide Grid
 	SD.length_nuclide_grid = in.n_isotopes * in.n_gridpoints;
-	SD.nuclide_grid     = (NuclideGridPoint *) malloc( SD.length_nuclide_grid * sizeof(NuclideGridPoint));
+	// SD.nuclide_grid     = (NuclideGridPoint *) malloc( SD.length_nuclide_grid * sizeof(NuclideGridPoint));
 	assert(SD.nuclide_grid != NULL);
 	nbytes += SD.length_nuclide_grid * sizeof(NuclideGridPoint);
 	for( int i = 0; i < SD.length_nuclide_grid; i++ )
@@ -74,7 +74,7 @@ SimulationData grid_init_do_not_profile( Inputs in, int mype )
 
 		// Allocate space to hold the union of all nuclide energy data
 		SD.length_unionized_energy_array = in.n_isotopes * in.n_gridpoints;
-		SD.unionized_energy_array = (double *) malloc( SD.length_unionized_energy_array * sizeof(double));
+		// SD.unionized_energy_array = (double *) malloc( SD.length_unionized_energy_array * sizeof(double));
 		assert(SD.unionized_energy_array != NULL );
 		nbytes += SD.length_unionized_energy_array * sizeof(double);
 
@@ -87,7 +87,7 @@ SimulationData grid_init_do_not_profile( Inputs in, int mype )
 
 		// Allocate space to hold the acceleration grid indices
 		SD.length_index_grid = SD.length_unionized_energy_array * in.n_isotopes;
-		SD.index_grid = (int *) malloc( SD.length_index_grid * sizeof(int));
+		// SD.index_grid = (int *) malloc( SD.length_index_grid * sizeof(int));
 		assert(SD.index_grid != NULL);
 		nbytes += SD.length_index_grid * sizeof(int);
 
@@ -127,7 +127,7 @@ SimulationData grid_init_do_not_profile( Inputs in, int mype )
 		if(mype == 0) printf("Intializing hash grid...\n");
 		SD.length_unionized_energy_array = 0;
 		SD.length_index_grid  = (long) in.hash_bins * (long) in.n_isotopes;
-		SD.index_grid = (int *) malloc( SD.length_index_grid * sizeof(int)); 
+		// SD.index_grid = (int *) malloc( SD.length_index_grid * sizeof(int)); 
 		assert(SD.index_grid != NULL);
 		nbytes += SD.length_index_grid * sizeof(int);
 
@@ -152,21 +152,21 @@ SimulationData grid_init_do_not_profile( Inputs in, int mype )
 	if(mype == 0) printf("Intializing material data...\n");
 	
 	// Set the number of nuclides in each material
-	SD.num_nucs  = load_num_nucs(in.n_isotopes);
+	load_num_nucs(SD.num_nucs, in.n_isotopes);
 	SD.length_num_nucs = 12; // There are always 12 materials in XSBench
 
 	// Intialize the flattened 2D grid of material data. The grid holds
 	// a list of nuclide indices for each of the 12 material types. The
 	// grid is allocated as a full square grid, even though not all
 	// materials have the same number of nuclides.
-	SD.mats = load_mats(SD.num_nucs, in.n_isotopes, &SD.max_num_nucs);
+	load_mats(SD.mats, SD.num_nucs, in.n_isotopes, &SD.max_num_nucs);
 	SD.length_mats = SD.length_num_nucs * SD.max_num_nucs;
 
 	// Intialize the flattened 2D grid of nuclide concentration data. The grid holds
 	// a list of nuclide concentrations for each of the 12 material types. The
 	// grid is allocated as a full square grid, even though not all
 	// materials have the same number of nuclides.
-	SD.concs = load_concs(SD.num_nucs, SD.max_num_nucs);
+	load_concs(SD.concs, SD.num_nucs, SD.max_num_nucs);
 	SD.length_concs = SD.length_mats;
 
 	if(mype == 0) printf("Intialization complete. Allocated %.0lf MB of data.\n", nbytes/1024.0/1024.0 );

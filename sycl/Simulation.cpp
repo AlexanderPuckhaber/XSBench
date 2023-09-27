@@ -73,18 +73,19 @@ unsigned long long run_event_based_simulation(Inputs in, SimulationData SD, int 
 		if( SD.length_unionized_energy_array == 0 )
 		{
 			SD.length_unionized_energy_array = 1;
-			SD.unionized_energy_array = (double *) malloc(sizeof(double));
+			// SD.unionized_energy_array = (double *) malloc(sizeof(double));
 		}
 		buffer<double,1> unionized_energy_array_d(SD.unionized_energy_array, SD.length_unionized_energy_array);
 		if( SD.length_index_grid == 0 )
 		{
 			SD.length_index_grid = 1;
-			SD.index_grid = (int *) malloc(sizeof(int));
+			// SD.index_grid = (int *) malloc(sizeof(int));
 		}
 		// For the unionized grid, this is a large array. Enforce that it is able to be allocated on the
 		// OpenCL device (as some OpenCL devices have fairly low limts here for some reason...)
 		size_t index_grid_allocation_sz = ceil((SD.length_index_grid * sizeof(int)));
-		assert( index_grid_allocation_sz <= sycl_q.get_device().get_info<cl::sycl::info::device::max_mem_alloc_size>() );
+		size_t sycl_device_max_mem_alloc_size = sycl_q.get_device().get_info<cl::sycl::info::device::max_mem_alloc_size>();
+		assert( index_grid_allocation_sz <=  sycl_device_max_mem_alloc_size);
 		buffer<int, 1> index_grid_d(SD.index_grid, (unsigned long long ) SD.length_index_grid);
 		
 		////////////////////////////////////////////////////////////////////////////////

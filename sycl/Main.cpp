@@ -23,7 +23,21 @@ int main( int argc, char* argv[] )
 	#endif
 
 	// Process CLI Fields -- store in "Inputs" structure
-	Inputs in = read_CLI( argc, argv );
+	// Inputs in = read_CLI( argc, argv );
+
+	Inputs in = {
+		.nthreads = 1,
+		.n_isotopes = 355,
+		.n_gridpoints = 100,
+		.lookups = 34,
+		.HM = "large",
+		.grid_type = UNIONIZED, // 0: Unionized Grid (default)    1: Nuclide Grid
+		.hash_bins = 10000,
+		.particles = 500000,
+		.simulation_method = EVENT_BASED,
+		.binary_mode = NONE,
+		.kernel_id = 0
+	};
 
 	// Set number of OpenMP Threads
 	//omp_set_num_threads(in.nthreads); 
@@ -42,9 +56,10 @@ int main( int argc, char* argv[] )
 
 	// If read from file mode is selected, skip initialization and load
 	// all simulation data structures from file instead
-	if( in.binary_mode == READ )
-		SD = binary_read(in);
-	else
+	
+	// if( in.binary_mode == READ )
+	// 	SD = binary_read(in);
+	// else
 		SD = grid_init_do_not_profile( in, mype );
 
 	// If writing from file mode is selected, write all simulation data

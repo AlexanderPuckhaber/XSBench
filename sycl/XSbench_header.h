@@ -49,7 +49,7 @@ typedef struct{
 	long n_isotopes;
 	long n_gridpoints;
 	int lookups;
-	char * HM;
+	char HM[6];
 	int grid_type; // 0: Unionized Grid (default)    1: Nuclide Grid
 	int hash_bins;
 	int particles;
@@ -59,23 +59,23 @@ typedef struct{
 } Inputs;
 
 typedef struct{
-	int * num_nucs;                     // Length = length_num_nucs;
-	double * concs;                     // Length = length_concs
-	int * mats;                         // Length = length_mats
-	double * unionized_energy_array;    // Length = length_unionized_energy_array
-	int * index_grid;                   // Length = length_index_grid
-	NuclideGridPoint * nuclide_grid;    // Length = length_nuclide_grid
+	int num_nucs[12];	// always 12 in xsbench         	            // Length = length_num_nucs;
+	double concs[12*355];	// 12 * max_num_nucs                     // Length = length_concs
+	int mats[12*355];	// num_mats * max_num_nucs                         // Length = length_mats
+	double unionized_energy_array[355*100];    // n_isotopes * n_gridpoints // Length = length_unionized_energy_array
+	int index_grid[355*100*355];   // SD.length_unionized_energy_array * in.n_isotopes                // Length = length_index_grid
+	NuclideGridPoint nuclide_grid[355*100];    // n_isotopes * n_gridpoints // Length = length_nuclide_grid
 	long length_num_nucs;
 	long length_concs;
 	long length_mats;
-	long length_unionized_energy_array;
+	long length_unionized_energy_array;	// in.n_isotopes * in.n_gridpoints
 	long length_index_grid;
 	long length_nuclide_grid;
 	int max_num_nucs;
-	double * p_energy_samples;
-	long length_p_energy_samples;
-	int * mat_samples;
-	long length_mat_samples;
+	// double * p_energy_samples;
+	// long length_p_energy_samples;
+	// int * mat_samples;
+	// long length_mat_samples;
 } SimulationData;
 
 // io.c
@@ -88,7 +88,7 @@ void print_CLI_error(void);
 void print_inputs(Inputs in, int nprocs, int version);
 int print_results( Inputs in, int mype, double runtime, int nprocs, unsigned long long vhash, double time );
 void binary_write( Inputs in, SimulationData SD );
-SimulationData binary_read( Inputs in );
+// SimulationData binary_read( Inputs in );
 
 // Simulation.c
 unsigned long long run_event_based_simulation(Inputs in, SimulationData SD, int mype, double * kernel_init_time);
@@ -122,9 +122,9 @@ size_t estimate_mem_usage( Inputs in );
 double get_time(void);
 
 // Materials.c
-int * load_num_nucs(long n_isotopes);
-int * load_mats( int * num_nucs, long n_isotopes, int * max_num_nucs );
-double * load_concs( int * num_nucs, int max_num_nucs );
+int * load_num_nucs(int * num_nucs, long n_isotopes);
+int * load_mats( int * mats, int * num_nucs, long n_isotopes, int * max_num_nucs );
+double * load_concs( double * concs, int * num_nucs, int max_num_nucs );
 
 // binary search for energy on nuclide energy grid
 // This funciton is defined in the header, as it is also used by the

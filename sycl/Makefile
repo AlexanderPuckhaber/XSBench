@@ -3,8 +3,8 @@
 #===============================================================================
 
 CC          = llvm
-OPTIMIZE    = yes
-DEBUG       = no
+OPTIMIZE    = no
+DEBUG       = yes
 PROFILE     = no
 MPI         = no
 
@@ -29,7 +29,7 @@ obj = $(source:.cpp=.o)
 #===============================================================================
 
 # Standard Flags
-CFLAGS := -std=c++14 -Wall
+CFLAGS := -std=c++20 -Wall
 
 # Linker Flags
 LDFLAGS = -lm
@@ -81,6 +81,14 @@ endif
 #===============================================================================
 # Targets to Build
 #===============================================================================
+
+CC = /netscratch/apuckhaber3/git/sycl/build/bin/clang++
+
+CFLAGS += -fsycl
+# CFLAGS += -fno-sycl-unnamed-lambda
+CFLAGS += -fsycl-targets=fpga64_hls_hw
+LDFLAGS += -lOpenCL
+
 
 $(program): $(obj) XSbench_header.h Makefile
 	$(CC) $(CFLAGS) $(obj) -o $@ $(LDFLAGS)

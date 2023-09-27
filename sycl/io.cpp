@@ -263,7 +263,7 @@ Inputs read_CLI( int argc, char * argv[] )
 	input.kernel_id = 0;
 	
 	// defaults to H-M Large benchmark
-	input.HM = (char *) malloc( 6 * sizeof(char) );
+	// input.HM = (char *) malloc( 6 * sizeof(char) );
 	input.HM[0] = 'l' ; 
 	input.HM[1] = 'a' ; 
 	input.HM[2] = 'r' ; 
@@ -348,13 +348,13 @@ Inputs read_CLI( int argc, char * argv[] )
 				print_CLI_error();
 		}
 		// HM (-s)
-		else if( strcmp(arg, "-s") == 0 )
-		{	
-			if( ++i < argc )
-				input.HM = argv[i];
-			else
-				print_CLI_error();
-		}
+		// else if( strcmp(arg, "-s") == 0 )
+		// {	
+		// 	if( ++i < argc )
+		// 		input.HM = argv[i];
+		// 	else
+		// 		print_CLI_error();
+		// }
 		// grid type (-G)
 		else if( strcmp(arg, "-G") == 0 )
 		{
@@ -465,36 +465,36 @@ void binary_write( Inputs in, SimulationData SD )
 	fclose(fp);
 }
 
-SimulationData binary_read( Inputs in )
-{
-	SimulationData SD;
+// SimulationData binary_read( Inputs in )
+// {
+// 	SimulationData SD;
 	
-	const char * fname = "XS_data.dat";
-	printf("Reading all data structures from binary file %s...\n", fname);
+// 	const char * fname = "XS_data.dat";
+// 	printf("Reading all data structures from binary file %s...\n", fname);
 
-	FILE * fp = fopen(fname, "r");
-	assert(fp != NULL);
+// 	FILE * fp = fopen(fname, "r");
+// 	assert(fp != NULL);
 
-	// Read SimulationData Object. Include pointers, even though we won't be using them.
-	fread(&SD, sizeof(SimulationData), 1, fp);
+// 	// Read SimulationData Object. Include pointers, even though we won't be using them.
+// 	fread(&SD, sizeof(SimulationData), 1, fp);
 
-	// Allocate space for arrays on heap
-	SD.num_nucs = (int *) malloc(SD.length_num_nucs * sizeof(int));
-	SD.concs = (double *) malloc(SD.length_concs * sizeof(double));
-	SD.mats = (int *) malloc(SD.length_mats * sizeof(int));
-	SD.nuclide_grid = (NuclideGridPoint *) malloc(SD.length_nuclide_grid * sizeof(NuclideGridPoint));
-	SD.index_grid = (int *) malloc( SD.length_index_grid * sizeof(int));
-	SD.unionized_energy_array = (double *) malloc( SD.length_unionized_energy_array * sizeof(double));
+// 	// Allocate space for arrays on heap
+// 	SD.num_nucs = (int *) malloc(SD.length_num_nucs * sizeof(int));
+// 	SD.concs = (double *) malloc(SD.length_concs * sizeof(double));
+// 	SD.mats = (int *) malloc(SD.length_mats * sizeof(int));
+// 	SD.nuclide_grid = (NuclideGridPoint *) malloc(SD.length_nuclide_grid * sizeof(NuclideGridPoint));
+// 	SD.index_grid = (int *) malloc( SD.length_index_grid * sizeof(int));
+// 	SD.unionized_energy_array = (double *) malloc( SD.length_unionized_energy_array * sizeof(double));
 
-	// Read heap arrays into SimulationData Object
-	fread(SD.num_nucs,       sizeof(int), SD.length_num_nucs, fp);
-	fread(SD.concs,          sizeof(double), SD.length_concs, fp);
-	fread(SD.mats,           sizeof(int), SD.length_mats, fp);
-	fread(SD.nuclide_grid,   sizeof(NuclideGridPoint), SD.length_nuclide_grid, fp); 
-	fread(SD.index_grid, sizeof(int), SD.length_index_grid, fp);
-	fread(SD.unionized_energy_array, sizeof(double), SD.length_unionized_energy_array, fp);
+// 	// Read heap arrays into SimulationData Object
+// 	fread(SD.num_nucs,       sizeof(int), SD.length_num_nucs, fp);
+// 	fread(SD.concs,          sizeof(double), SD.length_concs, fp);
+// 	fread(SD.mats,           sizeof(int), SD.length_mats, fp);
+// 	fread(SD.nuclide_grid,   sizeof(NuclideGridPoint), SD.length_nuclide_grid, fp); 
+// 	fread(SD.index_grid, sizeof(int), SD.length_index_grid, fp);
+// 	fread(SD.unionized_energy_array, sizeof(double), SD.length_unionized_energy_array, fp);
 
-	fclose(fp);
+// 	fclose(fp);
 
-	return SD;
-}
+// 	return SD;
+// }
